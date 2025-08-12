@@ -31,13 +31,15 @@ interface DeliveryRecord {
   ballNumber: number // The ball number in this over when this delivery was made
 }
 
-interface LastAction {
+interface Action {
+  id: string
   type: 'delivery' | 'wicket' | 'reset'
   deliveryType?: DeliveryType
   ballsBefore: number
   oversBefore: number
   wicketsBefore: number
   currentOverDeliveriesBefore: DeliveryRecord[]
+  timestamp: number
 }
 
 function App() {
@@ -48,9 +50,10 @@ function App() {
   const [widesRebowled, setWidesRebowled] = useKV('wides-rebowled', true)
   const [noBallsRebowled, setNoBallsRebowled] = useKV('noballs-rebowled', true)
   const [currentOverDeliveries, setCurrentOverDeliveries] = useKV<DeliveryRecord[]>('current-over-deliveries', [])
+  const [actionHistory, setActionHistory] = useKV<Action[]>('action-history', [])
   
-  // Local state for last action (doesn't need persistence)
-  const [lastAction, setLastAction] = useState<LastAction | null>(null)
+  // Local state for dialogs (doesn't need persistence)
+  const [lastAction, setLastAction] = useState<Action | null>(null)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [showOverCompleteDialog, setShowOverCompleteDialog] = useState(false)
@@ -62,10 +65,23 @@ function App() {
   const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal' || d.type === 'wicket').length
   const widesInOver = currentOverDeliveries.filter(d => d.type === 'wide').length
   const noBallsInOver = currentOverDeliveries.filter(d => d.type === 'no-ball').length
+  const canUndo = actionHistory.length > 0
+
+  const addToHistory = (action: Omit<Action, 'id' | 'timestamp'>) => {
+    const newAction: Action = {
+      ...action,
+      id: crypto.randomUUID(),
+      timestamp: Date.now()
+    }
+    
+    // Keep only the last 10 actions to avoid memory issues
+    setActionHistory(current => [...current, newAction].slice(-10))
+    setLastAction(newAction)
+  }
 
   const recordDelivery = (type: DeliveryType) => {
     // Record the action for undo
-    setLastAction({
+    addToHistory({
       type: 'delivery',
       deliveryType: type,
       ballsBefore: balls,
@@ -115,7 +131,7 @@ function App() {
   }
 
   const recordWicket = () => {
-    setLastAction({
+    addToHistory({
       type: 'wicket', 
       ballsBefore: balls,
       oversBefore: overs,
@@ -150,29 +166,35 @@ function App() {
   }
 
   const undoLastAction = () => {
-    if (!lastAction) return
+    if (actionHistory.length === 0) return
 
-    if (lastAction.type === 'delivery') {
-      setBalls(lastAction.ballsBefore)
-      setOvers(lastAction.oversBefore)
-      setWickets(lastAction.wicketsBefore)
-      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
-      toast.info('Delivery undone')
-    } else if (lastAction.type === 'wicket') {
-      setBalls(lastAction.ballsBefore)
-      setOvers(lastAction.oversBefore)  
-      setWickets(lastAction.wicketsBefore)
-      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
-      toast.info('Wicket undone')
-    } else if (lastAction.type === 'reset') {
-      setBalls(lastAction.ballsBefore)
-      setOvers(lastAction.oversBefore)
-      setWickets(lastAction.wicketsBefore)
-      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
-      toast.info('Reset undone')
-    }
+    // Get the most recent action
+    const actionToUndo = actionHistory[actionHistory.length - 1]
     
-    setLastAction(null)
+    // Remove it from history
+    setActionHistory(current => current.slice(0, -1))
+    
+    // Update last action to the previous one (or null if none)
+    const previousAction = actionHistory[actionHistory.length - 2] || null
+    setLastAction(previousAction)
+
+    // Restore state to before the action
+    setBalls(actionToUndo.ballsBefore)
+    setOvers(actionToUndo.oversBefore)
+    setWickets(actionToUndo.wicketsBefore)
+    setCurrentOverDeliveries(actionToUndo.currentOverDeliveriesBefore)
+    
+    // Close any open dialogs that might be affected
+    setShowOverCompleteDialog(false)
+    
+    // Show appropriate toast
+    if (actionToUndo.type === 'delivery') {
+      toast.info(`Undone: ${actionToUndo.deliveryType} delivery`)
+    } else if (actionToUndo.type === 'wicket') {
+      toast.info('Undone: wicket')
+    } else if (actionToUndo.type === 'reset') {
+      toast.info('Undone: reset')
+    }
   }
 
   const confirmOverComplete = () => {
@@ -184,7 +206,7 @@ function App() {
   }
 
   const resetCounters = () => {
-    setLastAction({
+    addToHistory({
       type: 'reset',
       ballsBefore: balls,
       oversBefore: overs,
@@ -208,28 +230,36 @@ function App() {
           <h1 className="text-2xl font-bold text-foreground">Cricket Umpire</h1>
           <div className="flex gap-2">
             <Button 
-              variant={!lastAction ? "outline" : "default"}
+              variant={!canUndo ? "outline" : "default"}
               size="icon"
               onClick={undoLastAction}
-              disabled={!lastAction}
-              className={`h-10 w-10 transition-all ${
-                !lastAction 
+              disabled={!canUndo}
+              className={`relative h-10 w-10 transition-all ${
+                !canUndo 
                   ? 'opacity-50' 
                   : 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-md'
               }`}
               title={
-                !lastAction 
-                  ? 'No action to undo' 
+                !canUndo 
+                  ? 'No actions to undo' 
                   : `Undo ${
-                      lastAction.type === 'delivery' 
+                      lastAction?.type === 'delivery' 
                         ? `${lastAction.deliveryType} delivery` 
-                        : lastAction.type === 'wicket' 
+                        : lastAction?.type === 'wicket' 
                           ? 'wicket' 
                           : 'reset'
-                    }`
+                    } (${actionHistory.length} actions available)`
               }
             >
               <ArrowCounterClockwise size={20} />
+              {actionHistory.length > 0 && (
+                <Badge 
+                  variant="secondary" 
+                  className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-primary text-primary-foreground"
+                >
+                  {actionHistory.length}
+                </Badge>
+              )}
             </Button>
             <Dialog open={showSettings} onOpenChange={setShowSettings}>
               <DialogTrigger asChild>
