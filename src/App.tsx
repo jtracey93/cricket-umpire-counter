@@ -427,7 +427,6 @@ function App() {
               )}
             </CardContent>
           </Card>
-        }
 
         {/* Delivery Buttons */}
         <Card>
