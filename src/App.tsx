@@ -65,6 +65,7 @@ function App() {
   const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal' || d.type === 'wicket').length
   const widesInOver = currentOverDeliveries.filter(d => d.type === 'wide').length
   const noBallsInOver = currentOverDeliveries.filter(d => d.type === 'no-ball').length
+  const wicketsInOver = currentOverDeliveries.filter(d => d.type === 'wicket').length
   const canUndo = actionHistory.length > 0
 
   const addToHistory = (action: Omit<Action, 'id' | 'timestamp'>) => {
@@ -288,7 +289,7 @@ function App() {
                   Total deliveries this over: {totalDeliveriesInOver}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Legal balls: {legalDeliveriesInOver} | Extras: {widesInOver + noBallsInOver}
+                  Legal balls: {legalDeliveriesInOver} | Extras: {widesInOver + noBallsInOver} | Wickets: {wicketsInOver}
                 </div>
               </div>
             </div>
@@ -363,18 +364,22 @@ function App() {
             <CardTitle className="text-sm text-center">Current Over Details</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="grid grid-cols-3 gap-4 text-center text-sm">
+              <div className="grid grid-cols-4 gap-3 text-center text-sm">
                 <div>
                   <div className="text-lg font-semibold text-primary">{totalDeliveriesInOver}</div>
-                  <div className="text-xs text-muted-foreground">Total deliveries</div>
+                  <div className="text-xs text-muted-foreground">Total</div>
                 </div>
                 <div>
                   <div className="text-lg font-semibold text-primary">{legalDeliveriesInOver}</div>
-                  <div className="text-xs text-muted-foreground">Legal balls</div>
+                  <div className="text-xs text-muted-foreground">Legal</div>
                 </div>
                 <div>
                   <div className="text-lg font-semibold text-accent">{widesInOver + noBallsInOver}</div>
                   <div className="text-xs text-muted-foreground">Extras</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-destructive">{wicketsInOver}</div>
+                  <div className="text-xs text-muted-foreground">Wickets</div>
                 </div>
               </div>
               
