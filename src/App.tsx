@@ -358,12 +358,11 @@ function App() {
         )}
 
         {/* Current Over Details */}
-        {totalDeliveriesInOver > 0 && (
-          <Card className="bg-muted/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-center">Current Over Details</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="bg-muted/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm text-center">Current Over Details</CardTitle>
+          </CardHeader>
+          <CardContent>
               <div className="grid grid-cols-3 gap-4 text-center text-sm">
                 <div>
                   <div className="text-lg font-semibold text-primary">{totalDeliveriesInOver}</div>
@@ -397,30 +396,38 @@ function App() {
               )}
               
               {/* Delivery sequence visualization */}
-              <div className="mt-3 pt-3 border-t border-border">
-                <div className="text-xs text-muted-foreground mb-2 text-center">Delivery sequence:</div>
-                <div className="flex flex-wrap justify-center gap-1">
-                  {currentOverDeliveries.map((delivery, index) => (
-                    <Badge 
-                      key={index}
-                      variant={delivery.type === 'legal' ? 'default' : 'secondary'}
-                      className={`text-xs ${
-                        delivery.type === 'legal' ? 'bg-primary text-primary-foreground' :
-                        delivery.type === 'wicket' ? 'bg-accent text-accent-foreground' :
-                        delivery.type === 'wide' ? 'bg-yellow-200 text-yellow-800' :
-                        'bg-orange-200 text-orange-800'
-                      }`}
-                    >
-                      {delivery.type === 'legal' ? '•' : 
-                       delivery.type === 'wicket' ? 'W' :
-                       delivery.type === 'wide' ? 'Wd' : 'NB'}
-                    </Badge>
-                  ))}
+              {totalDeliveriesInOver > 0 && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="text-xs text-muted-foreground mb-2 text-center">Delivery sequence:</div>
+                  <div className="flex flex-wrap justify-center gap-1">
+                    {currentOverDeliveries.map((delivery, index) => (
+                      <Badge 
+                        key={index}
+                        variant={delivery.type === 'legal' ? 'default' : 'secondary'}
+                        className={`text-xs ${
+                          delivery.type === 'legal' ? 'bg-primary text-primary-foreground' :
+                          delivery.type === 'wicket' ? 'bg-accent text-accent-foreground' :
+                          delivery.type === 'wide' ? 'bg-yellow-200 text-yellow-800' :
+                          'bg-orange-200 text-orange-800'
+                        }`}
+                      >
+                        {delivery.type === 'legal' ? '•' : 
+                         delivery.type === 'wicket' ? 'W' :
+                         delivery.type === 'wide' ? 'Wd' : 'NB'}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {totalDeliveriesInOver === 0 && (
+                <div className="text-center text-sm text-muted-foreground py-2">
+                  No deliveries yet this over
+                </div>
+              )}
             </CardContent>
           </Card>
-        )}
+        }
 
         {/* Delivery Buttons */}
         <Card>
