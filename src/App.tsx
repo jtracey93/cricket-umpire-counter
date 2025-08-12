@@ -225,7 +225,7 @@ function App() {
       <div className="mx-auto max-w-md space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">Cricket Umpire</h1>
+          <h1 className="text-2xl font-bold text-foreground">Cricket Umpire Counter</h1>
           <Dialog open={showSettings} onOpenChange={setShowSettings}>
             <DialogTrigger asChild>
               <Button variant="outline" size="icon" className="h-10 w-10">
@@ -509,7 +509,7 @@ function App() {
               }`}
               title={
                 !canUndo 
-                  ? 'No actions to undo' 
+                        : lastAction?.type === 'wicket' 
                   : `Undo ${
                       lastAction?.type === 'delivery' 
                         ? `${lastAction.deliveryType} delivery` 
