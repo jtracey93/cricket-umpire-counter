@@ -15,10 +15,10 @@ import {
   DialogFooter
 } from '@/components/ui/dialog'
 import { 
-  Settings, 
+  Gear, 
   RotateCcw, 
   Target, 
-  Undo2,
+  ArrowCounterClockwise,
   Plus
 } from '@phosphor-icons/react'
 import { useKV } from '@github/spark/hooks'
@@ -26,12 +26,18 @@ import { toast } from 'sonner'
 
 type DeliveryType = 'legal' | 'wide' | 'no-ball'
 
+interface DeliveryRecord {
+  type: DeliveryType
+  ballNumber: number // The ball number in this over when this delivery was made
+}
+
 interface LastAction {
   type: 'delivery' | 'wicket' | 'reset'
   deliveryType?: DeliveryType
   ballsBefore: number
   oversBefore: number
   wicketsBefore: number
+  currentOverDeliveriesBefore: DeliveryRecord[]
 }
 
 function App() {
@@ -41,6 +47,7 @@ function App() {
   const [wickets, setWickets] = useKV('cricket-wickets', 0)
   const [widesRebowled, setWidesRebowled] = useKV('wides-rebowled', true)
   const [noBallsRebowled, setNoBallsRebowled] = useKV('noballs-rebowled', true)
+  const [currentOverDeliveries, setCurrentOverDeliveries] = useKV<DeliveryRecord[]>('current-over-deliveries', [])
   
   // Local state for last action (doesn't need persistence)
   const [lastAction, setLastAction] = useState<LastAction | null>(null)
@@ -49,6 +56,10 @@ function App() {
 
   const ballsRemaining = 6 - balls
   const isOverComplete = balls >= 6
+  const totalDeliveriesInOver = currentOverDeliveries.length
+  const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal').length
+  const widesInOver = currentOverDeliveries.filter(d => d.type === 'wide').length
+  const noBallsInOver = currentOverDeliveries.filter(d => d.type === 'no-ball').length
 
   const recordDelivery = (type: DeliveryType) => {
     // Record the action for undo
@@ -57,7 +68,8 @@ function App() {
       deliveryType: type,
       ballsBefore: balls,
       oversBefore: overs,
-      wicketsBefore: wickets
+      wicketsBefore: wickets,
+      currentOverDeliveriesBefore: [...currentOverDeliveries]
     })
 
     let shouldIncrementBall = true
@@ -69,12 +81,22 @@ function App() {
       shouldIncrementBall = false
     }
 
+    // Add delivery to current over tracking
+    const newDelivery: DeliveryRecord = {
+      type,
+      ballNumber: totalDeliveriesInOver + 1
+    }
+    
+    setCurrentOverDeliveries((current) => [...current, newDelivery])
+
     if (shouldIncrementBall) {
       setBalls((currentBalls) => {
         const newBalls = currentBalls + 1
         // Check if over is complete
         if (newBalls >= 6) {
           setOvers((currentOvers) => currentOvers + 1)
+          // Reset deliveries tracking for new over
+          setCurrentOverDeliveries([])
           toast.success('Over Complete!')
           return 0 // Reset balls to 0
         }
@@ -97,7 +119,8 @@ function App() {
       type: 'wicket', 
       ballsBefore: balls,
       oversBefore: overs,
-      wicketsBefore: wickets
+      wicketsBefore: wickets,
+      currentOverDeliveriesBefore: [...currentOverDeliveries]
     })
     
     setWickets((currentWickets) => currentWickets + 1)
@@ -111,12 +134,20 @@ function App() {
       setBalls(lastAction.ballsBefore)
       setOvers(lastAction.oversBefore)
       setWickets(lastAction.wicketsBefore)
+      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
       toast.info('Delivery undone')
     } else if (lastAction.type === 'wicket') {
       setBalls(lastAction.ballsBefore)
       setOvers(lastAction.oversBefore)  
       setWickets(lastAction.wicketsBefore)
+      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
       toast.info('Wicket undone')
+    } else if (lastAction.type === 'reset') {
+      setBalls(lastAction.ballsBefore)
+      setOvers(lastAction.oversBefore)
+      setWickets(lastAction.wicketsBefore)
+      setCurrentOverDeliveries(lastAction.currentOverDeliveriesBefore)
+      toast.info('Reset undone')
     }
     
     setLastAction(null)
@@ -127,12 +158,14 @@ function App() {
       type: 'reset',
       ballsBefore: balls,
       oversBefore: overs,
-      wicketsBefore: wickets
+      wicketsBefore: wickets,
+      currentOverDeliveriesBefore: [...currentOverDeliveries]
     })
     
     setBalls(0)
     setOvers(0)
     setWickets(0)
+    setCurrentOverDeliveries([])
     setShowResetDialog(false)
     toast.success('Counters reset')
   }
@@ -151,12 +184,12 @@ function App() {
               disabled={!lastAction}
               className="h-10 w-10"
             >
-              <Undo2 size={20} />
+              <ArrowCounterClockwise size={20} />
             </Button>
             <Dialog open={showSettings} onOpenChange={setShowSettings}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="icon" className="h-10 w-10">
-                  <Settings size={20} />
+                  <Gear size={20} />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
@@ -251,6 +284,69 @@ function App() {
               Over Complete - Ready for Next Over
             </Badge>
           </div>
+        )}
+
+        {/* Current Over Details */}
+        {totalDeliveriesInOver > 0 && (
+          <Card className="bg-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-center">Current Over Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                <div>
+                  <div className="text-lg font-semibold text-primary">{totalDeliveriesInOver}</div>
+                  <div className="text-xs text-muted-foreground">Total deliveries</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-primary">{legalDeliveriesInOver}</div>
+                  <div className="text-xs text-muted-foreground">Legal balls</div>
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-accent">{widesInOver + noBallsInOver}</div>
+                  <div className="text-xs text-muted-foreground">Extras</div>
+                </div>
+              </div>
+              
+              {(widesInOver > 0 || noBallsInOver > 0) && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="flex justify-center gap-4 text-xs">
+                    {widesInOver > 0 && (
+                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                        {widesInOver} Wide{widesInOver > 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                    {noBallsInOver > 0 && (
+                      <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                        {noBallsInOver} No-ball{noBallsInOver > 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* Delivery sequence visualization */}
+              <div className="mt-3 pt-3 border-t border-border">
+                <div className="text-xs text-muted-foreground mb-2 text-center">Delivery sequence:</div>
+                <div className="flex flex-wrap justify-center gap-1">
+                  {currentOverDeliveries.map((delivery, index) => (
+                    <Badge 
+                      key={index}
+                      variant={delivery.type === 'legal' ? 'default' : 'secondary'}
+                      className={`text-xs ${
+                        delivery.type === 'legal' ? 'bg-primary text-primary-foreground' :
+                        delivery.type === 'wide' ? 'bg-yellow-200 text-yellow-800' :
+                        'bg-orange-200 text-orange-800'
+                      }`}
+                    >
+                      {delivery.type === 'legal' ? '•' : 
+                       delivery.type === 'wide' ? 'W' : 'NB'}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Delivery Buttons */}
