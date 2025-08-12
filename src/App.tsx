@@ -206,20 +206,14 @@ function App() {
   }
 
   const resetCounters = () => {
-    addToHistory({
-      type: 'reset',
-      ballsBefore: balls,
-      oversBefore: overs,
-      wicketsBefore: wickets,
-      currentOverDeliveriesBefore: [...currentOverDeliveries]
-    })
-    
     setBalls(0)
     setOvers(0)
     setWickets(0)
     setCurrentOverDeliveries([])
+    setActionHistory([])
+    setLastAction(null)
     setShowResetDialog(false)
-    toast.success('Counters reset')
+    toast.success('Counters and history reset')
   }
 
   return (
