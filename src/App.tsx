@@ -208,11 +208,26 @@ function App() {
           <h1 className="text-2xl font-bold text-foreground">Cricket Umpire</h1>
           <div className="flex gap-2">
             <Button 
-              variant="outline" 
+              variant={!lastAction ? "outline" : "default"}
               size="icon"
               onClick={undoLastAction}
               disabled={!lastAction}
-              className="h-10 w-10"
+              className={`h-10 w-10 transition-all ${
+                !lastAction 
+                  ? 'opacity-50' 
+                  : 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-md'
+              }`}
+              title={
+                !lastAction 
+                  ? 'No action to undo' 
+                  : `Undo ${
+                      lastAction.type === 'delivery' 
+                        ? `${lastAction.deliveryType} delivery` 
+                        : lastAction.type === 'wicket' 
+                          ? 'wicket' 
+                          : 'reset'
+                    }`
+              }
             >
               <ArrowCounterClockwise size={20} />
             </Button>
