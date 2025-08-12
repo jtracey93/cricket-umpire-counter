@@ -10,7 +10,7 @@ A professional mobile-optimized cricket umpiring tool for tracking balls, overs,
 
 ## 🚀 Live Demo
 
-The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.io/cricket-umpire-counter/](https://jtracey93.github.io/cricket-umpire-counter/)**
+The app is automatically deployed to GitHub Pages with a custom domain: **[https://clicker.poyningscc.co.uk](https://clicker.poyningscc.co.uk)**
 
 ## Features
 
