@@ -53,9 +53,11 @@ function App() {
   const [lastAction, setLastAction] = useState<LastAction | null>(null)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [showOverCompleteDialog, setShowOverCompleteDialog] = useState(false)
 
   const ballsRemaining = 6 - balls
   const isOverComplete = balls >= 6
+  const isAwaitingOverConfirmation = balls >= 6 && showOverCompleteDialog
   const totalDeliveriesInOver = currentOverDeliveries.length
   const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal').length
   const widesInOver = currentOverDeliveries.filter(d => d.type === 'wide').length
@@ -92,13 +94,11 @@ function App() {
     if (shouldIncrementBall) {
       setBalls((currentBalls) => {
         const newBalls = currentBalls + 1
-        // Check if over is complete
+        // Check if over is complete (6 legal balls)
         if (newBalls >= 6) {
-          setOvers((currentOvers) => currentOvers + 1)
-          // Reset deliveries tracking for new over
-          setCurrentOverDeliveries([])
-          toast.success('Over Complete!')
-          return 0 // Reset balls to 0
+          // Show confirmation dialog instead of automatically progressing
+          setShowOverCompleteDialog(true)
+          return newBalls // Keep balls at 6 until confirmed
         }
         return newBalls
       })
@@ -151,6 +151,14 @@ function App() {
     }
     
     setLastAction(null)
+  }
+
+  const confirmOverComplete = () => {
+    setOvers((currentOvers) => currentOvers + 1)
+    setBalls(0)
+    setCurrentOverDeliveries([])
+    setShowOverCompleteDialog(false)
+    toast.success('Over Complete! New over started.')
   }
 
   const resetCounters = () => {
@@ -231,6 +239,39 @@ function App() {
             </Dialog>
           </div>
         </div>
+
+        {/* Over Complete Confirmation Dialog */}
+        <Dialog open={showOverCompleteDialog} onOpenChange={setShowOverCompleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Over Complete!</DialogTitle>
+              <DialogDescription>
+                6 legal balls have been bowled. Ready to start the next over?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <div className="text-center space-y-2">
+                <div className="text-lg font-semibold text-primary">
+                  Current: {overs}.{balls}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Total deliveries this over: {totalDeliveriesInOver}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Legal balls: {legalDeliveriesInOver} | Extras: {widesInOver + noBallsInOver}
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowOverCompleteDialog(false)}>
+                Stay in Current Over
+              </Button>
+              <Button onClick={confirmOverComplete}>
+                Start Next Over
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Main Counters */}
         <div className="grid grid-cols-3 gap-4">
@@ -359,31 +400,32 @@ function App() {
               size="lg" 
               className="w-full h-16 text-lg font-semibold"
               onClick={() => recordDelivery('legal')}
+              disabled={isAwaitingOverConfirmation}
             >
               Legal Delivery
             </Button>
             
             <div className="grid grid-cols-2 gap-4">
               <Button 
-                variant="secondary"
                 size="lg" 
-                className="h-14 text-base"
+                className="h-14 text-base bg-yellow-500 text-white hover:bg-yellow-600"
                 onClick={() => recordDelivery('wide')}
+                disabled={isAwaitingOverConfirmation}
               >
                 Wide
                 {widesRebowled && (
-                  <Badge variant="outline" className="ml-2 text-xs">Re-bowl</Badge>
+                  <Badge variant="outline" className="ml-2 text-xs bg-white text-yellow-600">Re-bowl</Badge>
                 )}
               </Button>
               <Button 
-                variant="secondary"
                 size="lg"
-                className="h-14 text-base"
+                className="h-14 text-base bg-orange-500 text-white hover:bg-orange-600"
                 onClick={() => recordDelivery('no-ball')}
+                disabled={isAwaitingOverConfirmation}
               >
                 No-ball
                 {noBallsRebowled && (
-                  <Badge variant="outline" className="ml-2 text-xs">Re-bowl</Badge>
+                  <Badge variant="outline" className="ml-2 text-xs bg-white text-orange-600">Re-bowl</Badge>
                 )}
               </Button>
             </div>
