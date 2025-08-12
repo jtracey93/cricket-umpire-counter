@@ -16,12 +16,11 @@ import {
 } from '@/components/ui/dialog'
 import { 
   Gear, 
-  RotateCcw, 
   Target, 
   ArrowCounterClockwise,
   Plus
 } from '@phosphor-icons/react'
-import { useKV } from '@github/spark/hooks'
+import { useKV } from './hooks/useKV'
 import { toast } from 'sonner'
 
 type DeliveryType = 'legal' | 'wide' | 'no-ball' | 'wicket'
@@ -541,7 +540,7 @@ function App() {
                   variant="destructive"
                   className="h-14 w-full max-w-xs"
                 >
-                  <RotateCcw size={20} className="mr-2" />
+                  <ArrowCounterClockwise size={20} className="mr-2" />
                   Reset All
                 </Button>
               </DialogTrigger>

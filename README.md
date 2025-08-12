@@ -7,6 +7,11 @@ A professional mobile-optimized cricket umpiring tool for tracking balls, overs,
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](#)
 [![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa&logoColor=white)](#)
 
+
+## 🚀 Live Demo
+
+The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.io/cricket-umpire-counter/](https://jtracey93.github.io/cricket-umpire-counter/)**
+
 ## Features
 
 ### 🏏 Core Umpiring Functions
@@ -26,6 +31,7 @@ A professional mobile-optimized cricket umpiring tool for tracking balls, overs,
 - **Reset with Confirmation**: Safe match/innings restart with accidental reset prevention
 - **Delivery Sequence**: Visual representation of each delivery in the current over
 
+
 ### 📱 Mobile-First Design
 - **Touch Optimized**: Large finger-friendly buttons (60px minimum) for outdoor use
 - **High Contrast**: Cricket-themed colors optimized for bright sunlight
@@ -33,7 +39,8 @@ A professional mobile-optimized cricket umpiring tool for tracking balls, overs,
 - **Professional Interface**: Clean, authoritative design that inspires confidence
 
 ### 💾 Persistent State
-- **Auto-save**: All data persists across app restarts and browser sessions  
+
+- **Auto-save**: All data persists across app restarts and browser sessions using localStorage
 - **Session Recovery**: Continue matches after device sleep or app backgrounding
 - **Action History**: Track up to 10 recent actions for comprehensive undo support
 
@@ -86,27 +93,35 @@ Visit the deployed app in your mobile browser and use "Add to Home Screen" for t
 - **Some Local Formats**: Extras may count toward the 6-ball over limit
 - **Custom Rules**: Configure based on your specific match requirements
 
+## Deployment
+
+The app automatically deploys to GitHub Pages on every push to the `main` branch. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed information about the deployment process.
+
 ## Technical Details
 
 ### Built With
 - **Frontend**: React 19 with TypeScript
 - **Styling**: Tailwind CSS with custom cricket-themed colors
-- **State Management**: GitHub Spark's persistent useKV hooks
+
+- **State Management**: localStorage-based persistence with custom useKV hook
 - **Build Tool**: Vite for fast development and optimized builds
 - **UI Components**: Radix UI primitives with custom styling
 - **Icons**: Phosphor Icons for consistent iconography
+- **Deployment**: GitHub Actions for CI/CD to GitHub Pages
 
 ### Architecture
 - **Component Structure**: Modular React components with proper separation of concerns  
-- **State Persistence**: Browser-based key-value storage with automatic serialization
+- **State Persistence**: Browser-based localStorage with automatic serialization
 - **Error Handling**: React Error Boundary for graceful failure recovery
 - **Responsive Design**: Mobile-first with landscape mode support
 
 ### Key Files
 - `src/App.tsx` - Main application component with all umpiring logic
+- `src/hooks/useKV.ts` - Custom localStorage persistence hook
 - `public/manifest.json` - PWA configuration for mobile installation
 - `PRD.md` - Comprehensive product requirements and design specification
 - `src/components/ui/` - Reusable UI components
+- `.github/workflows/deploy-pages.yml` - GitHub Actions deployment workflow
 
 ## Color Scheme
 
@@ -140,9 +155,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built with [GitHub Spark](https://github.com/github/spark) for rapid development
 - Inspired by the needs of cricket officials worldwide
 - Designed for reliability during critical match moments
+- Built with modern web technologies for optimal performance
 
 ---
 
