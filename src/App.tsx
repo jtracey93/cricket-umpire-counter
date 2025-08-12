@@ -201,6 +201,9 @@ function App() {
     setOvers((currentOvers) => currentOvers + 1)
     setBalls(0)
     setCurrentOverDeliveries([])
+    // Reset action history at end of each over
+    setActionHistory([])
+    setLastAction(null)
     setShowOverCompleteDialog(false)
     toast.success('Over Complete! New over started.')
   }
