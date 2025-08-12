@@ -7,6 +7,7 @@ A professional mobile-optimized cricket umpiring tool for tracking balls, overs,
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](#)
 [![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa&logoColor=white)](#)
 
+
 ## 🚀 Live Demo
 
 The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.io/cricket-umpire-counter/](https://jtracey93.github.io/cricket-umpire-counter/)**
@@ -30,6 +31,7 @@ The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.i
 - **Reset with Confirmation**: Safe match/innings restart with accidental reset prevention
 - **Delivery Sequence**: Visual representation of each delivery in the current over
 
+
 ### 📱 Mobile-First Design
 - **Touch Optimized**: Large finger-friendly buttons (60px minimum) for outdoor use
 - **High Contrast**: Cricket-themed colors optimized for bright sunlight
@@ -37,6 +39,7 @@ The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.i
 - **Professional Interface**: Clean, authoritative design that inspires confidence
 
 ### 💾 Persistent State
+
 - **Auto-save**: All data persists across app restarts and browser sessions using localStorage
 - **Session Recovery**: Continue matches after device sleep or app backgrounding
 - **Action History**: Track up to 10 recent actions for comprehensive undo support
@@ -48,7 +51,6 @@ The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.i
 - npm or yarn
 
 ### Local Development
-
 ```bash
 # Clone the repository
 git clone https://github.com/jtracey93/cricket-umpire-counter.git
@@ -100,6 +102,7 @@ The app automatically deploys to GitHub Pages on every push to the `main` branch
 ### Built With
 - **Frontend**: React 19 with TypeScript
 - **Styling**: Tailwind CSS with custom cricket-themed colors
+
 - **State Management**: localStorage-based persistence with custom useKV hook
 - **Build Tool**: Vite for fast development and optimized builds
 - **UI Components**: Radix UI primitives with custom styling
