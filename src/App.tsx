@@ -123,8 +123,30 @@ function App() {
       currentOverDeliveriesBefore: [...currentOverDeliveries]
     })
     
+    // Add wicket delivery to current over tracking as a legal delivery
+    const newDelivery: DeliveryRecord = {
+      type: 'legal',
+      ballNumber: totalDeliveriesInOver + 1
+    }
+    
+    setCurrentOverDeliveries((current) => [...current, newDelivery])
+    
+    // Increment wickets
     setWickets((currentWickets) => currentWickets + 1)
-    toast.success('Wicket!')
+    
+    // Increment balls (wicket counts as a legal delivery)
+    setBalls((currentBalls) => {
+      const newBalls = currentBalls + 1
+      // Check if over is complete (6 legal balls)
+      if (newBalls >= 6) {
+        // Show confirmation dialog instead of automatically progressing
+        setShowOverCompleteDialog(true)
+        return newBalls // Keep balls at 6 until confirmed
+      }
+      return newBalls
+    })
+    
+    toast.success('Wicket! (Legal delivery)')
   }
 
   const undoLastAction = () => {
@@ -439,6 +461,7 @@ function App() {
             variant="default"
             className="h-14 bg-accent text-accent-foreground hover:bg-accent/90"
             onClick={recordWicket}
+            disabled={isAwaitingOverConfirmation}
           >
             <Target size={20} className="mr-2" />
             Wicket
