@@ -24,7 +24,7 @@ import {
 import { useKV } from '@github/spark/hooks'
 import { toast } from 'sonner'
 
-type DeliveryType = 'legal' | 'wide' | 'no-ball'
+type DeliveryType = 'legal' | 'wide' | 'no-ball' | 'wicket'
 
 interface DeliveryRecord {
   type: DeliveryType
@@ -59,7 +59,7 @@ function App() {
   const isOverComplete = balls >= 6
   const isAwaitingOverConfirmation = balls >= 6 && showOverCompleteDialog
   const totalDeliveriesInOver = currentOverDeliveries.length
-  const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal').length
+  const legalDeliveriesInOver = currentOverDeliveries.filter(d => d.type === 'legal' || d.type === 'wicket').length
   const widesInOver = currentOverDeliveries.filter(d => d.type === 'wide').length
   const noBallsInOver = currentOverDeliveries.filter(d => d.type === 'no-ball').length
 
@@ -123,9 +123,9 @@ function App() {
       currentOverDeliveriesBefore: [...currentOverDeliveries]
     })
     
-    // Add wicket delivery to current over tracking as a legal delivery
+    // Add wicket delivery to current over tracking as a wicket type
     const newDelivery: DeliveryRecord = {
-      type: 'legal',
+      type: 'wicket',
       ballNumber: totalDeliveriesInOver + 1
     }
     
@@ -398,12 +398,14 @@ function App() {
                       variant={delivery.type === 'legal' ? 'default' : 'secondary'}
                       className={`text-xs ${
                         delivery.type === 'legal' ? 'bg-primary text-primary-foreground' :
+                        delivery.type === 'wicket' ? 'bg-accent text-accent-foreground' :
                         delivery.type === 'wide' ? 'bg-yellow-200 text-yellow-800' :
                         'bg-orange-200 text-orange-800'
                       }`}
                     >
                       {delivery.type === 'legal' ? '•' : 
-                       delivery.type === 'wide' ? 'W' : 'NB'}
+                       delivery.type === 'wicket' ? 'W' :
+                       delivery.type === 'wide' ? 'Wd' : 'NB'}
                     </Badge>
                   ))}
                 </div>
@@ -427,7 +429,7 @@ function App() {
               Legal Delivery
             </Button>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <Button 
                 size="lg" 
                 className="h-14 text-base bg-yellow-500 text-white hover:bg-yellow-600"
@@ -450,32 +452,31 @@ function App() {
                   <Badge variant="outline" className="ml-2 text-xs bg-white text-orange-600">Re-bowl</Badge>
                 )}
               </Button>
+              <Button 
+                size="lg"
+                variant="default"
+                className="h-14 bg-accent text-accent-foreground hover:bg-accent/90"
+                onClick={recordWicket}
+                disabled={isAwaitingOverConfirmation}
+              >
+                <Target size={20} className="mr-2" />
+                Wicket
+              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Wicket and Reset */}
-        <div className="grid grid-cols-2 gap-4">
-          <Button 
-            size="lg"
-            variant="default"
-            className="h-14 bg-accent text-accent-foreground hover:bg-accent/90"
-            onClick={recordWicket}
-            disabled={isAwaitingOverConfirmation}
-          >
-            <Target size={20} className="mr-2" />
-            Wicket
-          </Button>
-
+        {/* Reset Button */}
+        <div className="flex justify-center">
           <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
             <DialogTrigger asChild>
               <Button 
                 size="lg"
                 variant="destructive"
-                className="h-14"
+                className="h-14 w-full max-w-xs"
               >
                 <RotateCcw size={20} className="mr-2" />
-                Reset
+                Reset All
               </Button>
             </DialogTrigger>
             <DialogContent>
