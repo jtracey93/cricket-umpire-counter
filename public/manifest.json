@@ -2,7 +2,7 @@
   "name": "Cricket Umpire Counter",
   "short_name": "Cricket Umpire",
   "description": "Mobile cricket umpire counter for tracking balls, overs, and wickets",
-  "start_url": "/",
+  "start_url": "https://clicker.poyningscc.co.uk/",
   "display": "standalone",
   "background_color": "#fafafa",
   "theme_color": "#2d5a3d",

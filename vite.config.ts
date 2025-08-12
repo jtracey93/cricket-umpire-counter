@@ -7,7 +7,7 @@ const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/cricket-umpire-counter/' : '/',
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),
