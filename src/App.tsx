@@ -348,8 +348,8 @@ function App() {
                 <div className="text-4xl font-bold text-primary">{balls}</div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {ballsRemaining} remaining
-          </Card>
-
+                </div>
+              </div>
             </CardContent>
           </Card>
 
