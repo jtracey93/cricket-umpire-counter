@@ -1,5 +1,6 @@
 {
-    "name": "spark-template",
+    "name": "cricket-umpire-counter",
+    "description": "Mobile-optimized cricket umpiring tool for tracking balls, overs, and wickets with customizable rules",
     "private": true,
     "version": "0.0.0",
     "type": "module",
