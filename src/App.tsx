@@ -509,6 +509,18 @@ function App() {
         {/* Current Settings Display */}
         <Card className="bg-muted/50">
           <CardContent className="pt-4">
+            <div className="flex justify-between items-start mb-3">
+              <div className="text-sm font-medium">Current Settings</div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowSettings(true)}
+                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <Gear size={14} className="mr-1" />
+                Change
+              </Button>
+            </div>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span>Wides:</span>
