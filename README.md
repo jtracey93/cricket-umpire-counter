@@ -1,23 +1,64 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# Cricket Umpire Counter
 
-This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
+A mobile-friendly cricket umpire counter application for tracking balls, overs, and wickets during cricket matches.
 
-🚀 What's Inside?
-- A clean, minimal Spark environment
-- Pre-configured for local development
-- Ready to scale with your ideas
-  
-🧠 What Can You Do?
+## 🚀 Live Demo
 
-Right now, this is just a starting point — the perfect place to begin building and testing your Spark applications.
+The app is automatically deployed to GitHub Pages: **[https://jtracey93.github.io/cricket-umpire-counter/](https://jtracey93.github.io/cricket-umpire-counter/)**
 
-🧹 Just Exploring?
-No problem! If you were just checking things out and don’t need to keep this code:
+## Features
 
-- Simply delete your Spark.
-- Everything will be cleaned up — no traces left behind.
+- **Ball Counting**: Track balls bowled in the current over (0-6)
+- **Over Tracking**: Monitor complete overs with automatic progression
+- **Wicket Counter**: Keep track of wickets taken
+- **Extras Handling**: Support for wides and no-balls with configurable rebowl rules
+- **Persistent State**: Data persists across browser sessions using localStorage
+- **Undo Functionality**: Undo last actions with comprehensive history
+- **Settings**: Configure wide and no-ball rebowl rules
+- **Mobile Optimized**: PWA-ready with responsive design
+- **Delivery Sequence**: Visual tracking of deliveries in the current over
 
-📄 License For Spark Template Resources 
+## Development
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
+### Prerequisites
+- Node.js 20 or higher
+- npm
+
+### Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/jtracey93/cricket-umpire-counter.git
+cd cricket-umpire-counter
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Deployment
+
+The app automatically deploys to GitHub Pages on every push to the `main` branch. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed information about the deployment process.
+
+## Technology Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and development server
+- **Tailwind CSS** - Styling
+- **Radix UI** - Component primitives
+- **Phosphor Icons** - Icon system
+- **GitHub Actions** - CI/CD for deployment
+- **GitHub Pages** - Hosting
+
+## 📄 License 
+
+The Cricket Umpire Counter files and resources are licensed under the terms of the MIT license, Copyright GitHub, Inc.
