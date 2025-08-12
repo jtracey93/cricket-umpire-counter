@@ -509,7 +509,7 @@ function App() {
               }`}
               title={
                 !canUndo 
-                        : lastAction?.type === 'wicket' 
+                  ? 'No actions to undo'
                   : `Undo ${
                       lastAction?.type === 'delivery' 
                         ? `${lastAction.deliveryType} delivery` 
