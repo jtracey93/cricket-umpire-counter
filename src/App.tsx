@@ -430,28 +430,36 @@ function App() {
             </Button>
             
             <div className="grid grid-cols-3 gap-3">
-              <Button 
-                size="lg" 
-                className="h-14 text-base bg-yellow-500 text-white hover:bg-yellow-600"
-                onClick={() => recordDelivery('wide')}
-                disabled={isAwaitingOverConfirmation}
-              >
-                Wide
+              <div className="flex flex-col items-center gap-1">
+                <Button 
+                  size="lg" 
+                  className="w-full h-14 text-base bg-yellow-500 text-white hover:bg-yellow-600"
+                  onClick={() => recordDelivery('wide')}
+                  disabled={isAwaitingOverConfirmation}
+                >
+                  Wide
+                </Button>
                 {widesRebowled && (
-                  <Badge variant="outline" className="ml-2 text-xs bg-white text-yellow-600">Re-bowl</Badge>
+                  <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
+                    Re-bowl
+                  </Badge>
                 )}
-              </Button>
-              <Button 
-                size="lg"
-                className="h-14 text-base bg-orange-500 text-white hover:bg-orange-600"
-                onClick={() => recordDelivery('no-ball')}
-                disabled={isAwaitingOverConfirmation}
-              >
-                No-ball
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Button 
+                  size="lg"
+                  className="w-full h-14 text-base bg-orange-500 text-white hover:bg-orange-600"
+                  onClick={() => recordDelivery('no-ball')}
+                  disabled={isAwaitingOverConfirmation}
+                >
+                  No-ball
+                </Button>
                 {noBallsRebowled && (
-                  <Badge variant="outline" className="ml-2 text-xs bg-white text-orange-600">Re-bowl</Badge>
+                  <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                    Re-bowl
+                  </Badge>
                 )}
-              </Button>
+              </div>
               <Button 
                 size="lg"
                 variant="default"
