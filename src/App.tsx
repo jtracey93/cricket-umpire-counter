@@ -225,83 +225,49 @@ function App() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Cricket Umpire</h1>
-          <div className="flex gap-2">
-            <Button 
-              variant={!canUndo ? "outline" : "default"}
-              size="icon"
-              onClick={undoLastAction}
-              disabled={!canUndo}
-              className={`relative h-10 w-10 transition-all ${
-                !canUndo 
-                  ? 'opacity-50' 
-                  : 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-md'
-              }`}
-              title={
-                !canUndo 
-                  ? 'No actions to undo' 
-                  : `Undo ${
-                      lastAction?.type === 'delivery' 
-                        ? `${lastAction.deliveryType} delivery` 
-                        : lastAction?.type === 'wicket' 
-                          ? 'wicket' 
-                          : 'reset'
-                    } (${actionHistory.length} actions available)`
-              }
-            >
-              <ArrowCounterClockwise size={20} />
-              {actionHistory.length > 0 && (
-                <Badge 
-                  variant="secondary" 
-                  className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-primary text-primary-foreground"
-                >
-                  {actionHistory.length}
-                </Badge>
-              )}
-            </Button>
-            <Dialog open={showSettings} onOpenChange={setShowSettings}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10">
-                  <Gear size={20} />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Settings</DialogTitle>
-                  <DialogDescription>
-                    Configure wide and no-ball rules
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <Label htmlFor="wides-rebowled">Wides re-bowled</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Wide deliveries must be bowled again
-                      </p>
-                    </div>
-                    <Switch
-                      id="wides-rebowled"
-                      checked={widesRebowled}
-                      onCheckedChange={setWidesRebowled}
-                    />
+          <Dialog open={showSettings} onOpenChange={setShowSettings}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon" className="h-10 w-10">
+                <Gear size={20} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Settings</DialogTitle>
+                <DialogDescription>
+                  Configure wide and no-ball rules
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label htmlFor="wides-rebowled">Wides re-bowled</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Wide deliveries must be bowled again
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <Label htmlFor="noballs-rebowled">No-balls re-bowled</Label>
-                      <p className="text-sm text-muted-foreground">
-                        No-ball deliveries must be bowled again
-                      </p>
-                    </div>
-                    <Switch
-                      id="noballs-rebowled" 
-                      checked={noBallsRebowled}
-                      onCheckedChange={setNoBallsRebowled}
-                    />
-                  </div>
+                  <Switch
+                    id="wides-rebowled"
+                    checked={widesRebowled}
+                    onCheckedChange={setWidesRebowled}
+                  />
                 </div>
-              </DialogContent>
-            </Dialog>
-          </div>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label htmlFor="noballs-rebowled">No-balls re-bowled</Label>
+                    <p className="text-sm text-muted-foreground">
+                      No-ball deliveries must be bowled again
+                    </p>
+                  </div>
+                  <Switch
+                    id="noballs-rebowled" 
+                    checked={noBallsRebowled}
+                    onCheckedChange={setNoBallsRebowled}
+                  />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Over Complete Confirmation Dialog */}
@@ -516,36 +482,76 @@ function App() {
           </CardContent>
         </Card>
 
-        {/* Reset Button */}
-        <div className="flex justify-center">
-          <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
-            <DialogTrigger asChild>
-              <Button 
-                size="lg"
-                variant="destructive"
-                className="h-14 w-full max-w-xs"
-              >
-                <RotateCcw size={20} className="mr-2" />
-                Reset All
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Reset All Counters</DialogTitle>
-                <DialogDescription>
-                  This will reset balls, overs, and wickets to zero. This action can be undone.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowResetDialog(false)}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={resetCounters}>
+        {/* Undo and Reset Buttons */}
+        <div className="flex flex-col gap-3">
+          {/* Undo Button */}
+          <div className="flex justify-center">
+            <Button 
+              variant={!canUndo ? "outline" : "default"}
+              size="lg"
+              onClick={undoLastAction}
+              disabled={!canUndo}
+              className={`relative h-14 w-full max-w-xs transition-all ${
+                !canUndo 
+                  ? 'opacity-50' 
+                  : 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-md'
+              }`}
+              title={
+                !canUndo 
+                  ? 'No actions to undo' 
+                  : `Undo ${
+                      lastAction?.type === 'delivery' 
+                        ? `${lastAction.deliveryType} delivery` 
+                        : lastAction?.type === 'wicket' 
+                          ? 'wicket' 
+                          : 'reset'
+                    } (${actionHistory.length} actions available)`
+              }
+            >
+              <ArrowCounterClockwise size={20} className="mr-2" />
+              Undo {actionHistory.length > 0 && `(${actionHistory.length})`}
+              {actionHistory.length > 0 && (
+                <Badge 
+                  variant="secondary" 
+                  className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-primary text-primary-foreground"
+                >
+                  {actionHistory.length}
+                </Badge>
+              )}
+            </Button>
+          </div>
+
+          {/* Reset Button */}
+          <div className="flex justify-center">
+            <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+              <DialogTrigger asChild>
+                <Button 
+                  size="lg"
+                  variant="destructive"
+                  className="h-14 w-full max-w-xs"
+                >
+                  <RotateCcw size={20} className="mr-2" />
                   Reset All
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Reset All Counters</DialogTitle>
+                  <DialogDescription>
+                    This will reset balls, overs, and wickets to zero. This action can be undone.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowResetDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={resetCounters}>
+                    Reset All
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         {/* Current Settings Display */}
