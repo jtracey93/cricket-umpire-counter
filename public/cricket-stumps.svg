@@ -1,0 +1,21 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with rounded corners and cricket green -->
+  <rect width="192" height="192" rx="32" fill="#2d5a3d"/>
+  
+  <!-- Cricket Stumps (3 vertical posts) -->
+  <!-- Left stump -->
+  <rect x="68" y="60" width="8" height="80" fill="#fafafa" rx="4"/>
+  <!-- Center stump -->
+  <rect x="92" y="60" width="8" height="80" fill="#fafafa" rx="4"/>
+  <!-- Right stump -->
+  <rect x="116" y="60" width="8" height="80" fill="#fafafa" rx="4"/>
+  
+  <!-- Bails (horizontal pieces on top) -->
+  <!-- Left bail -->
+  <rect x="66" y="58" width="28" height="4" fill="#fafafa" rx="2"/>
+  <!-- Right bail -->
+  <rect x="98" y="58" width="28" height="4" fill="#fafafa" rx="2"/>
+  
+  <!-- Ground line -->
+  <rect x="50" y="140" width="92" height="2" fill="#fafafa" opacity="0.6"/>
+</svg>
