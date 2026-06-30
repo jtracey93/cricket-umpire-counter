@@ -1,6 +1,6 @@
 # Cricket Umpire Counter - Product Requirements Document
 
-A mobile-optimized cricket umpiring tool that tracks balls, overs, wickets with customizable wide and no-ball handling rules.
+A mobile-optimized cricket umpiring tool that tracks balls, overs, wickets — and, with optional scoring mode, the running team total — with customizable wide and no-ball handling rules.
 
 **Experience Qualities**: 
 1. **Reliable** - Accurate counting with clear visual feedback for critical match decisions
@@ -27,11 +27,27 @@ A mobile-optimized cricket umpiring tool that tracks balls, overs, wickets with 
 - Success criteria: Seamless over transitions with persistent count
 
 **Wicket Counter**
-- Functionality: Track dismissals throughout the innings
+- Functionality: Track dismissals throughout the innings, capped at 10 (a full team)
 - Purpose: Monitor team's remaining batsmen and innings conclusion
 - Trigger: Dedicated wicket button for dismissals
-- Progression: Dismissal occurs → Tap wicket button → Counter increments → Visual confirmation
-- Success criteria: Accurate wicket tracking independent of ball count
+- Progression: Dismissal occurs → Tap wicket button → Counter increments → Visual confirmation. On the 10th wicket an "All out" popup confirms the innings is over and delivery buttons lock until reset/undo/resume.
+- Success criteria: Accurate wicket tracking independent of ball count; never exceeds 10; all-out is clearly signalled
+
+**Optional Scoring Mode**
+- Functionality: Track the running team total (runs / wickets) alongside overs, making the app engaging enough to score with while umpiring. On by default; easily turned off in Settings.
+- Purpose: Let umpires keep the score as well as officiate, without forcing it on those who only want ball/over/wicket counting.
+- Trigger: "Scoring mode" switch in Settings (default on).
+- Progression:
+  - **On**: The single "Legal Delivery" button is replaced by run buttons (`• 1 2 3 4 6` plus `5+` for unusual scores). Wide / No-ball / Bye / Leg-bye each open a quick run picker for runs taken. Wides and no-balls add a configurable penalty (default 1 run, set beside the re-bowl toggles). A prominent scoreboard shows `runs/wickets`, overs and current run rate, and the delivery-sequence chips show runs (e.g. `4`, `•`, `Wd+1`, `Nb+2`, `B2`, `Lb1`, `W`). To save space, the **Current Over Details** card is collapsed by default in scoring mode (tap its header to expand; a compact summary is shown while collapsed). When an over completes, the confirmation dialog also shows the **runs scored that over** and the **score total** (`runs/wickets`) while scoring is on.
+  - **Off**: The app behaves exactly as before — a single "Legal Delivery" button with Wide / No-ball / Wicket, no runs and no scoreboard, and the Current Over Details card expanded.
+- Success criteria: With scoring off the experience is unchanged; with scoring on the team total updates correctly for runs, extras (penalty + runs run), byes and leg-byes, and is restored by Undo.
+
+**Manual Set / Resume Score (mid-innings pickup)**
+- Functionality: Manually enter the current runs (when scoring on), wickets and overs (in `overs.balls` notation, e.g. `11.3`) so an umpire can pick up part-way through an innings.
+- Purpose: Officials often take over mid-innings and need to start from the current match state, not zero.
+- Trigger: "Set / Resume Score" button on the main screen and a matching link in Settings.
+- Progression: Open dialog → Enter runs / wickets / overs → Inline validation flags bad input live (wickets must be less than 10; overs in `overs.balls` with balls 0–5, so `12.6` or `11.9` are rejected; runs ≥ 0) and the confirm button stays disabled until all fields are valid → Existing data triggers an overwrite warning → Confirm → State is set and the current over's ball-by-ball and undo history are cleared (prior detail is unknown).
+- Success criteria: The score, wickets and overs.balls reflect the entered values, impossible values cannot be submitted, and play continues correctly from that point.
 
 **Wide/No-Ball Rule Toggle**
 - Functionality: Configure whether wides and no-balls consume balls from the over
@@ -49,6 +65,8 @@ A mobile-optimized cricket umpiring tool that tracks balls, overs, wickets with 
 
 ## Edge Case Handling
 
+- **Innings complete (all out)** - Cap wickets at 10; on the 10th wicket show an "All out" popup and lock deliveries until reset, undo or resume
+- **Impossible manual entry** - Reject more than 9 wickets and invalid overs (e.g. `12.6`, `11.9`) inline before they can be applied
 - **Multiple extras in sequence** - Handle consecutive wides/no-balls without breaking over logic
 - **Accidental taps** - Provide undo functionality for the last action taken
 - **App backgrounding** - Persist all counter state when app loses focus
