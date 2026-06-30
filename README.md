@@ -1,6 +1,6 @@
 # Cricket Umpire Counter
 
-A professional mobile-optimized cricket umpiring tool for tracking balls, overs, and wickets during live matches. Designed with cricket officials in mind, this Progressive Web App (PWA) provides reliable, efficient counting with customizable rules for different cricket formats.
+A professional mobile-optimized cricket umpiring tool for tracking balls, overs, wickets — and, with optional scoring mode, the running team total — during live matches. Designed with cricket officials in mind, this Progressive Web App (PWA) provides reliable, efficient counting with customizable rules for different cricket formats.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](#)
@@ -19,6 +19,16 @@ The app is automatically deployed to GitHub Pages with a custom domain: **[https
 - **Over Counter**: Automatic over progression when 6 legal balls are completed
 - **Wicket Counter**: Independent wicket tracking throughout the innings
 - **Current Over Details**: Visual breakdown of deliveries, extras, and wickets in the current over
+
+### 🧮 Optional Scoring Mode
+- **Team Total**: Track the running `runs/wickets` and current run rate alongside overs — on by default, easily turned off in Settings
+- **Run Buttons**: With scoring on, record runs per ball (`• 1 2 3 4 6`, plus `5+` for unusual scores) in place of the single "Legal Delivery" button
+- **Extras & Byes**: Wide, No-ball, Bye and Leg-bye each open a quick run picker; wides and no-balls add a configurable penalty (default 1) set beside the re-bowl toggles
+- **All Out**: Wickets are capped at 10 — the 10th wicket triggers an "All out" popup and locks deliveries until you reset, undo or resume
+- **Collapsible Over Details**: The Current Over Details card is collapsed by default in scoring mode to save space (tap its header to expand)
+- **Over-complete recap**: When an over finishes, the confirmation popup shows the runs scored that over and the running score total (`runs/wickets`) while scoring is on
+- **Set / Resume Score**: Pick up mid-innings by manually entering the current runs, wickets and overs (`overs.balls`, e.g. `11.3`), with live validation that blocks impossible values (10+ wickets, `12.6`, `11.9`, …)
+- **Off = unchanged**: With scoring off the app behaves exactly as before — a single "Legal Delivery" button, no runs and no scoreboard
 
 ### ⚙️ Customizable Rules
 - **Wide Ball Rules**: Toggle whether wides consume balls from the over or are re-bowled
@@ -76,16 +86,19 @@ Visit the deployed app in your mobile browser and use "Add to Home Screen" for t
 
 ### Basic Operation
 1. **Start New Match**: Use "Reset All" to clear all counters
-2. **Record Deliveries**: 
-   - Tap "Legal Delivery" for standard balls
-   - Use "Wide" or "No-ball" for extras (respects your rule settings)
-   - Tap "Wicket" for dismissals
+2. **Record Deliveries**:
+   - With **scoring on** (default): tap a run button (`• 1 2 3 4 6` or `5+`) for each legal ball; use "Wide", "No-ball", "Bye" or "Leg-bye" for extras (a run picker appears); tap "Out" for dismissals
+   - With **scoring off**: tap "Legal Delivery" for standard balls, "Wide" or "No-ball" for extras, and "Wicket" for dismissals
 3. **Over Completion**: Confirm when 6 legal balls are reached to advance to the next over
-4. **Undo Mistakes**: Use the undo button to reverse the last action
+4. **Undo Mistakes**: Use the undo button to reverse the last action (restores runs too)
+5. **Pick Up Mid-Innings**: Tap "Set / Resume Score" to enter the current runs, wickets and overs (`overs.balls`, e.g. `11.3`)
 
 ### Settings Configuration
 - Access settings via the gear icon in the top-right
+- Toggle **Scoring mode** on or off (default on)
+- Set the runs added per wide and per no-ball (shown when scoring is on)
 - Toggle wide and no-ball rebowl rules to match your format
+- Open "Set / resume score…" to enter the current match state
 - Settings are saved automatically and persist between sessions
 
 ### Rule Examples
